@@ -50,7 +50,7 @@ def analyze_process(process):
         except (psutil.AccessDenied, psutil.NoSuchProcess):
             username = None
 
-   score, reasons = evaluate_process(executable)
+   score, reasons = evaluate_process(executable) 
 
         risk_level = (
             "HIGH" if score >= 70
