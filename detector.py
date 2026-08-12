@@ -50,16 +50,7 @@ def analyze_process(process):
         except (psutil.AccessDenied, psutil.NoSuchProcess):
             username = None
 
-        suspicious = is_suspicious_path(executable)
-
-        score = 30 if suspicious else 0
-
-        reasons = []
-
-        if suspicious:
-            reasons.append(
-                "Executable is located in a commonly suspicious path"
-            )
+   score, reasons = evaluate_process(executable)
 
         risk_level = (
             "HIGH" if score >= 70
