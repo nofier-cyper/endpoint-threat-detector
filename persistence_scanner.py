@@ -79,4 +79,4 @@ def scan_persistence():
     """Run all persistence checks."""
     return {
         "startup_directories": scan_startup_directories(),
-  }
+    }
