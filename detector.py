@@ -1,5 +1,6 @@
 import json
-import os
+import platform
+from network_monitor import get_network_connections
 from rules import evaluate_process
 from datetime import datetime, timezone
 
@@ -9,31 +10,7 @@ except ImportError:
     print("Missing dependency: psutil")
     print("Install it with: pip install psutil")
     raise SystemExit(1)
-
-
-SUSPICIOUS_PATHS = (
-    "/tmp/",
-    "/var/tmp/",
-    "/dev/shm/",
-    "\\temp\\",
-    "\\appdata\\local\\temp\\",
-    "\\users\\public\\",
-)
-
-
-def is_suspicious_path(path):
-    """Check whether an executable is located in a commonly abused path."""
-    if not path:
-        return False
-
-    normalized = path.replace("/", "\\").lower()
-
-    return any(
-        suspicious in normalized
-        for suspicious in SUSPICIOUS_PATHS
-    )
-
-
+    
 def analyze_process(process):
     """Collect defensive information about one running process."""
     try:
@@ -50,7 +27,7 @@ def analyze_process(process):
         except (psutil.AccessDenied, psutil.NoSuchProcess):
             username = None
 
-   score, reasons = evaluate_process(executable) 
+        score, reasons = evaluate_process(executable)
 
         risk_level = (
             "HIGH" if score >= 70
@@ -95,6 +72,8 @@ def scan_processes():
 
 def build_report(processes):
     """Build a structured security report."""
+       network_connections = get_network_connections()
+
     return {
         "tool": "Endpoint Threat Detector",
         "version": "0.1.0",
@@ -103,6 +82,10 @@ def build_report(processes):
             "platform": platform.platform(),
             "hostname": platform.node(),
             "architecture": platform.machine(),
+        },
+                "network": {
+            "total_connections": len(network_connections),
+            "connections": network_connections,
         },
         "summary": {
             "processes_analyzed": len(processes),
