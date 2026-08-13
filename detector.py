@@ -92,8 +92,13 @@ def build_report(processes):
         },
 
         "network": {
-            "total_connections": len(network_connections),
-            "connections": network_connections,
+            "available": network_connections["available"],
+            "total_connections": len(
+                network_connections["connections"]
+            ),
+            "error": network_connections["error"],
+            "message": network_connections["message"],
+            "connections": network_connections["connections"],
         },
 
         "persistence": persistence_findings,
