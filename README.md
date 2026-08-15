@@ -19,7 +19,7 @@ The project focuses on practical defensive security concepts such as:
 
 ## Version
 
-Current version: v0.1
+Current version: v0.2
 
 ## Project Status
 
