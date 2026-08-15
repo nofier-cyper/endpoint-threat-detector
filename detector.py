@@ -3,7 +3,7 @@ import platform
 from datetime import datetime, timezone
 
 try:
-    import psutil
+    import psutil 
 except ImportError:
     print("Missing dependency: psutil")
     print("Install it with: pip install psutil")
