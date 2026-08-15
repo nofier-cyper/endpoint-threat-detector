@@ -1,9 +1,10 @@
 import json
 import platform
 from datetime import datetime, timezone
+from hashing import calculate_sha256
 
 try:
-    import psutil 
+    import psutil
 except ImportError:
     print("Missing dependency: psutil")
     print("Install it with: pip install psutil")
@@ -24,7 +25,8 @@ def analyze_process(process):
             executable = process.exe()
         except (psutil.AccessDenied, psutil.NoSuchProcess):
             executable = None
-
+        file_hash = calculate_sha256(executable)
+        
         try:
             username = process.username()
         except (psutil.AccessDenied, psutil.NoSuchProcess):
@@ -45,6 +47,7 @@ def analyze_process(process):
             "name": name,
             "username": username,
             "executable": executable,
+            "sha256": file_hash,
             "risk_score": score,
             "risk_level": risk_level,
             "reasons": reasons,
@@ -82,7 +85,7 @@ def build_report(processes):
 
     return {
         "tool": "Endpoint Threat Detector",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "timestamp": datetime.now(timezone.utc).isoformat(),
 
         "system": {
@@ -121,7 +124,7 @@ def build_report(processes):
 
 def main():
     print("=" * 60)
-    print("ENDPOINT THREAT DETECTOR v0.1")
+    print("ENDPOINT THREAT DETECTOR v0.2")
     print("=" * 60)
 
     print("[*] Starting defensive endpoint analysis...")
@@ -164,3 +167,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
